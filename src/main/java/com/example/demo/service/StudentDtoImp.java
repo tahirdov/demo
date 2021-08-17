@@ -2,10 +2,11 @@ package com.example.demo.service;
 
 import com.example.demo.entity.Student;
 import com.example.demo.repo.studentRepo;
-import org.springframework.beans.factory.annotation.Autowired;
+import javassist.NotFoundException;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
+import java.util.Optional;
 
 @Service
 public class StudentDtoImp implements studentDto {
@@ -17,8 +18,9 @@ public class StudentDtoImp implements studentDto {
     }
 
     @Override
-    public Student getById(Long id) {
-        return repo.getById(id);
+    public Student getById(Long id) throws NotFoundException {
+        if (doesStudentExist(id)) throw new NotFoundException("Student not found");
+        else return repo.getById(id);
     }
 
     @Override
@@ -27,8 +29,9 @@ public class StudentDtoImp implements studentDto {
     }
 
     @Override
-    public void update(Long id, Student s) {
-        repo.update(id, s.getName(), s.getSurname(), s.getGpa());
+    public void update(Long id, Student s) throws NotFoundException {
+        if (doesStudentExist(id)) throw new NotFoundException("Student not found");
+        else repo.update(id, s.getName(), s.getSurname(), s.getGpa());
     }
 
     @Override
@@ -37,8 +40,14 @@ public class StudentDtoImp implements studentDto {
     }
 
     @Override
-    public void delete(Long id) {
-        repo.deleteStudentById(id);
+    public void delete(Long id) throws NotFoundException {
+        if (doesStudentExist(id)) throw new NotFoundException("Student not found");
+        else repo.deleteStudentById(id);
+    }
+
+    @Override
+    public boolean doesStudentExist(Long id) {
+        return repo.findById(id).isEmpty();
     }
 
 }
