@@ -1,7 +1,7 @@
 package com.example.demo.api;
 
 import com.example.demo.entity.Student;
-import org.springframework.beans.factory.annotation.Autowired;
+import com.example.demo.service.StudentDtoImp;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -9,8 +9,11 @@ import java.util.List;
 @RestController("/student")
 public class StudentController {
 
-    @Autowired
-    private com.example.demo.service.studentDtoService st;
+    private final StudentDtoImp st;
+
+    public StudentController(StudentDtoImp imp) {
+        st = imp;
+    }
 
     @GetMapping("/allStudents")
     public List<Student> getAllStudents() {
